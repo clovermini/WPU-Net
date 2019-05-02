@@ -1,2 +1,2 @@
 # WPU-Net
-Boundary learning by using propagation in convolution network.
+WPU-Net: Boundary learning by using weighted propagation in convolution network.
