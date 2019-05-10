@@ -29,7 +29,7 @@ def get_bck_dis_weight(dis_map, w0=10, eps=1e-20):
     weight_matrix = w0 * np.exp(-1 * pow((max_dis - dis_map), 2) / (2 * pow(std, 2)))
     return weight_matrix
 
-def caculate_weight_map(maskAddress, saveAddress, type = "last"):
+def caculate_weight_map(maskAddress, saveAddress):
     """
     计算真值图对应的权重图  Calculate the weight map corresponding to the mask image
     :param maskAddress:  Address for mask image
