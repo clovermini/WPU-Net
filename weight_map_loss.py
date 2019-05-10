@@ -29,11 +29,12 @@ def get_bck_dis_weight(dis_map, w0=10, eps=1e-20):
     weight_matrix = w0 * np.exp(-1 * pow((max_dis - dis_map), 2) / (2 * pow(std, 2)))
     return weight_matrix
 
-def caculate_weight_map(maskAddress, saveAddress):
+def caculate_weight_map(maskAddress, saveAddress, weight_cof = 30):
     """
     计算真值图对应的权重图  Calculate the weight map corresponding to the mask image
     :param maskAddress:  Address for mask image
     :param saveAddress:  save directory
+    :param weight_cof:  weight for class balance plus w0
     :return:  "adaptive_dis_weight" is the weight map for loss   "adaptive_bck_dis_weight_norm" is the weight map for last information
     """
 
@@ -42,7 +43,7 @@ def caculate_weight_map(maskAddress, saveAddress):
     image_props = regionprops(labeled, cache=False)
     dis_trf = ndimage.distance_transform_edt(255 - mask)
     adaptive_obj_dis_weight = np.zeros(mask.shape, dtype=np.float32)
-    adaptive_obj_dis_weight = adaptive_obj_dis_weight + (mask / 255) * 30
+    adaptive_obj_dis_weight = adaptive_obj_dis_weight + (mask / 255) * weight_cof
     adaptive_bck_dis_weight = np.ones(mask.shape, dtype=np.float32)
 
     for num in range(1, label_num + 1):
@@ -50,31 +51,30 @@ def caculate_weight_map(maskAddress, saveAddress):
         bool_dis = np.zeros(image_prop.image.shape)
         bool_dis[image_prop.image] = 1.0
         (min_row, min_col, max_row, max_col) = image_prop.bbox
-        temp_dis = np.zeros(bool_dis.shape)
         temp_dis = dis_trf[min_row: max_row, min_col: max_col] * bool_dis
 
         adaptive_obj_dis_weight[min_row: max_row, min_col: max_col] = adaptive_obj_dis_weight[min_row: max_row, min_col: max_col] + get_obj_dis_weight(temp_dis) * bool_dis
         adaptive_bck_dis_weight[min_row: max_row, min_col: max_col] = adaptive_bck_dis_weight[min_row: max_row, min_col: max_col] + get_bck_dis_weight(temp_dis) * bool_dis
 
-        # get weight map for loss
-        adaptive_bck_dis_weight = adaptive_bck_dis_weight[:, :, np.newaxis]
-        adaptive_obj_dis_weight = adaptive_obj_dis_weight[:, :, np.newaxis]
-        adaptive_dis_weight = np.concatenate((adaptive_bck_dis_weight, adaptive_obj_dis_weight), axis=2)
+    # get weight map for loss
+    adaptive_bck_dis_weight = adaptive_bck_dis_weight[:, :, np.newaxis]
+    adaptive_obj_dis_weight = adaptive_obj_dis_weight[:, :, np.newaxis]
+    adaptive_dis_weight = np.concatenate((adaptive_bck_dis_weight, adaptive_obj_dis_weight), axis=2)
 
-        np.save(os.path.join(saveAddress, "weight_map_loss.npy"), adaptive_dis_weight)
+    np.save(os.path.join(saveAddress, "weight_map_loss.npy"), adaptive_dis_weight)
 
-        print("adaptive_obj_dis_weight range ", np.max(adaptive_obj_dis_weight), " ", np.min(adaptive_obj_dis_weight))
-        print("adaptive_bck_dis_weight range ", np.max(adaptive_bck_dis_weight), " ", np.min(adaptive_bck_dis_weight))
+    print("adaptive_obj_dis_weight range ", np.max(adaptive_obj_dis_weight), " ", np.min(adaptive_obj_dis_weight))
+    print("adaptive_bck_dis_weight range ", np.max(adaptive_bck_dis_weight), " ", np.min(adaptive_bck_dis_weight))
 
-        # get weight for last information
-        bck_maxinum = np.max(adaptive_bck_dis_weight)
-        bck_mininum = np.min(adaptive_bck_dis_weight)
-        adaptive_bck_dis_weight_norm = (adaptive_bck_dis_weight - bck_mininum) / (bck_maxinum - bck_mininum)
-        adaptive_bck_dis_weight_norm = (1 - adaptive_bck_dis_weight_norm) * (-7) + 1
+    # get weight for last information
+    bck_maxinum = np.max(adaptive_bck_dis_weight)
+    bck_mininum = np.min(adaptive_bck_dis_weight)
+    adaptive_bck_dis_weight_norm = (adaptive_bck_dis_weight - bck_mininum) / (bck_maxinum - bck_mininum)
+    adaptive_bck_dis_weight_norm = (1 - adaptive_bck_dis_weight_norm) * (-7) + 1
 
-        np.save(os.path.join(saveAddress, "weight_map_last.npy"), adaptive_bck_dis_weight_norm)
+    np.save(os.path.join(saveAddress, "weight_map_last.npy"), adaptive_bck_dis_weight_norm)
 
-        return adaptive_dis_weight, adaptive_bck_dis_weight_norm
+    return adaptive_dis_weight, adaptive_bck_dis_weight_norm
 
 
 class WeightMapLoss(nn.Module):
