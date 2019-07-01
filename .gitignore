@@ -1,3 +1,6 @@
 *.xml
 *.iml
-.idea/
+.idea/*.png
+*.npy
+./__pycache__/
+.datasets/
