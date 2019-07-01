@@ -1,6 +1,12 @@
 *.xml
 *.iml
-.idea/*.png
+.idea/
+*.hdf5
+*.zip
+*.rar
+*.pkl
+*.pyc
+*.png
 *.npy
 ./__pycache__/
 .datasets/
