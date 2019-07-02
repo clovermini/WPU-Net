@@ -5,7 +5,7 @@ from grain_track import utility
 from grain_track.inference_track_net import *
 
 cwd = os.getcwd()
-parameter_address = os.path.join(cwd, "parameter")
+parameter_address = os.path.join(cwd, "grain_track", "parameter")
 cnn_device = "cuda:0"
 
 print("For real data")
@@ -85,7 +85,7 @@ r_index, adjust_r_index, v_index, merger_error, split_error = utility.validate_l
 print("The ri is {:.8f}, ari is {:.8f}, vi is {:.8f}, merger_error is {:.8f}, split_error is {:.8f}"
       .format(r_index, adjust_r_index, v_index, merger_error, split_error))
 print("The duriation of min centroid dis is {:.2f}'s".format(end_time - start_time))
-np.save(os.path.join(data_address, "simulated_gt_min_centroid_dis_label_stack.npy", label_stack_pred))
+np.save(os.path.join(data_address, "simulated_gt_min_centroid_dis_label_stack.npy"), label_stack_pred)
 
 # method = 2 max overlap area
 print("Analyzing by max overlap area")
@@ -97,7 +97,7 @@ r_index, adjust_r_index, v_index, merger_error, split_error = utility.validate_l
 print("The ri is {:.8f}, ari is {:.8f}, vi is {:.8f}, merger_error is {:.8f}, split_error is {:.8f}"
       .format(r_index, adjust_r_index, v_index, merger_error, split_error))
 print("The duriation of max overlap area is {:.2f}'s".format(end_time - start_time))
-np.save(os.path.join(data_address, "simulated_gt_max_overlap_area_label_stack.npy", label_stack_pred))
+np.save(os.path.join(data_address, "simulated_gt_max_overlap_area_label_stack.npy"), label_stack_pred)
 
 # method = 3 cnn vgg13_bn
 print("Analyzing by vgg13_bn")
@@ -110,7 +110,7 @@ r_index, adjust_r_index, v_index, merger_error, split_error = utility.validate_l
 print("The ri is {:.8f}, ari is {:.8f}, vi is {:.8f}, merger_error is {:.8f}, split_error is {:.8f}"
       .format(r_index, adjust_r_index, v_index, merger_error, split_error))
 print("The duriation of vgg13_bn is {:.2f}'s".format(end_time - start_time))
-np.save(os.path.join(data_address, "simulated_gt_vgg13_bn_label_stack.npy", label_stack_pred))
+np.save(os.path.join(data_address, "simulated_gt_vgg13_bn_label_stack.npy"), label_stack_pred)
 
 # method = 3 cnn densenet161
 print("Analyzing by densenet161")
@@ -123,4 +123,4 @@ r_index, adjust_r_index, v_index, merger_error, split_error = utility.validate_l
 print("The ri is {:.8f}, ari is {:.8f}, vi is {:.8f}, merger_error is {:.8f}, split_error is {:.8f}"
       .format(r_index, adjust_r_index, v_index, merger_error, split_error))
 print("The duriation of densenet161 is {:.2f}'s".format(end_time - start_time))
-np.save(os.path.join(data_address, "simulated_gt_densenet161_label_stack.npy", label_stack_pred))
+np.save(os.path.join(data_address, "simulated_gt_densenet161_label_stack.npy"), label_stack_pred)

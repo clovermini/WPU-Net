@@ -8,5 +8,5 @@
 *.pyc
 *.png
 *.npy
-./__pycache__/
+.__pycache__/
 .datasets/

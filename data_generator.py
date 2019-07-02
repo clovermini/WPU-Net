@@ -40,14 +40,14 @@ positive_num, negative_num = utility.produce_two_slice_data(real_val, output_val
 # positive_num = 8901, negative_num = 29960
 print("For real val data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
 
-# real_test = real_label[:, :, 148:]
-# real_boundary = real_boundary[:, :, 148:]
-# print("The shape of real_test is {}".format(real_test.shape))
-# np.save(os.path.join(output_test_dir, "real_gt_label_stack.npy"), real_test)
-# print("For real test data, we save npy and its boundary")
-# h, w, d = real_boundary.shape
-# for index in range(d):
-#     cv2.imwrite(os.path.join(output_test_boundary_dir, str(index).zfill(3) + ".png"), real_boundary[:,:, index])
+real_test = real_label[:, :, 148:]
+real_boundary = real_boundary[:, :, 148:]
+print("The shape of real_test is {}".format(real_test.shape))
+np.save(os.path.join(output_test_dir, "real_gt_label_stack.npy"), real_test)
+print("For real test data, we save npy and its boundary")
+h, w, d = real_boundary.shape
+for index in range(d):
+    cv2.imwrite(os.path.join(output_test_boundary_dir, str(index).zfill(3) + ".png"), real_boundary[:,:, index])
 
 # For simulated data [400, 400, 400],
 # train = data[:, :, 0:240], val = data[:,:,240:320], test = data[:, :, 320:]
@@ -73,11 +73,11 @@ positive_num, negative_num = utility.produce_two_slice_data(simulated_val, outpu
 # positive_num = 14616, negative_num = 35458
 print("For simulated val data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
 
-# simulated_test = simulated_label[:, :, 320:]
-# simulated_boundary = simulated_boundary[:, :, 320:]
-# print("The shape of simulated_test is {}".format(simulated_test.shape))
-# np.save(os.path.join(output_test_dir, "simulated_gt_label_stack.npy"), simulated_test)
-# print("For simulated test data, we save npy and its boundary")
-# h, w, d = simulated_boundary.shape
-# for index in range(d):
-#     cv2.imwrite(os.path.join(output_test_boundary_dir, str(index).zfill(3) + ".png"), simulated_boundary[:,:, index])
+simulated_test = simulated_label[:, :, 320:]
+simulated_boundary = simulated_boundary[:, :, 320:]
+print("The shape of simulated_test is {}".format(simulated_test.shape))
+np.save(os.path.join(output_test_dir, "simulated_gt_label_stack.npy"), simulated_test)
+print("For simulated test data, we save npy and its boundary")
+h, w, d = simulated_boundary.shape
+for index in range(d):
+    cv2.imwrite(os.path.join(output_test_boundary_dir, str(index).zfill(3) + ".png"), simulated_boundary[:,:, index])
