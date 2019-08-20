@@ -11,7 +11,7 @@ Deep learning has driven great progress in natural and biological image processi
     pytorch 1.0
     gala (for evaluation)
 
-gala is installed according to https://github.com/janelia-flyem/gala
+gala is installed according to https://github.com/janelia-flyem/gala.
 
 
 ## DataSet and Running
