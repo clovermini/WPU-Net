@@ -1,4 +1,4 @@
-# WPU-Net: Boundary learning by using weighted propagation in convolution network.
+# WPU-Net
 WPU-Net: Boundary learning by using weighted propagation in convolution network.
 <!-- This is the pytorch implementation of algorithm in paper https://arxiv.org/pdf/1905.09226.pdf. -->
 
