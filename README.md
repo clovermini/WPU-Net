@@ -1,6 +1,6 @@
 # WPU-Net: Boundary learning by using weighted propagation in convolution network.
-
-This is the pytorch implementation of algorithm in paper https://arxiv.org/pdf/1905.09226.pdf.
+WPU-Net: Boundary learning by using weighted propagation in convolution network.
+<!-- This is the pytorch implementation of algorithm in paper https://arxiv.org/pdf/1905.09226.pdf. -->
 
 ## Abstract
 Deep learning has driven great progress in natural and biological image processing. However, in materials science and engineering, there are often some flaws and indistinctions in material microscopic images induced from complex sample preparation, even due to the material itself, hindering the detection of target objects. In this work, we propose WPU-net that redesign the architecture and weighted loss of U-Net to force the network to integrate information from adjacent slices and pay more attention to the topology in this boundary detection task. Then, the WPU-net was applied into a typic material example, i.e., the grain boundary detection of polycrystalline material. Experiments demonstrate that the proposed method achieves promising performance and outperforms state-of-the-art methods. Besides, we propose a new method for object tracking between adjacent slices, which can effectively reconstruct the 3D structure of the whole material. Finally, we present a materials microscopic image dataset with the goal of advancing the state-of-the-art in image processing for materials sciences.
@@ -30,8 +30,9 @@ The example results of WPU-Net algorithm is shown as follows:
 </p>
 
 ## Citation
+<!--
 If you find our work is useful for your research, Please be kind to cite it. Thanks. 
 
     Ma B, Liu C, Wei X, et al. WPU-Net: Boundary learning by using weighted propagation in convolution network[J]. arXiv preprint arXiv:1905.09226, 2019.
-
+-->
 This paper is in submission....
