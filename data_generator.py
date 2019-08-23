@@ -16,9 +16,10 @@ real_boundary = file_h5["real"]["boundary"]
 simulated_label = file_h5["simulated"]["label"]
 simulated_boundary = file_h5["simulated"]["boundary"]
 
+# ************************************************* Grain Track ********************************************************
 # For real data [1024, 1024, 296],
 # train = data[:, :, 0:116], val = data[:,:,116:148], test = data[:, :, 148:]
-# 对于真实数据，我们取前116层作为训练集，116-148（32层）作为验证集，148-296（148层）作为测试集
+# 对于真实数据，我们取前116层作为训练集，117-148（32层）作为验证集，149-296（148层）作为测试集
 output_train_dir = os.path.join(cwd, "datasets", "grain_track", "net_train", "real", "train")
 output_val_dir = os.path.join(cwd, "datasets", "grain_track", "net_train", "real", "val")
 output_test_dir = os.path.join(cwd, "datasets", "grain_track", "net_test", "real")
@@ -47,11 +48,11 @@ np.save(os.path.join(output_test_dir, "real_gt_label_stack.npy"), real_test)
 print("For real test data, we save npy and its boundary")
 h, w, d = real_boundary.shape
 for index in range(d):
-    cv2.imwrite(os.path.join(output_test_boundary_dir, str(index).zfill(3) + ".png"), real_boundary[:,:, index])
+    cv2.imwrite(os.path.join(output_test_boundary_dir, str(148 + 1 + index).zfill(3) + ".png"), real_boundary[:,:, index])
 
 # For simulated data [400, 400, 400],
 # train = data[:, :, 0:240], val = data[:,:,240:320], test = data[:, :, 320:]
-# 对于模拟数据，我们取前240层作为训练集，240-320（80层）作为验证集，320-400（80层）作为测试集
+# 对于模拟数据，我们取前240层作为训练集，241-320（80层）作为验证集，321-400（80层）作为测试集
 output_train_dir = os.path.join(cwd, "datasets", "grain_track", "net_train", "simulated", "train")
 output_val_dir = os.path.join(cwd, "datasets", "grain_track", "net_train", "simulated", "val")
 output_test_dir = os.path.join(cwd, "datasets", "grain_track", "net_test", "simulated")
@@ -80,4 +81,4 @@ np.save(os.path.join(output_test_dir, "simulated_gt_label_stack.npy"), simulated
 print("For simulated test data, we save npy and its boundary")
 h, w, d = simulated_boundary.shape
 for index in range(d):
-    cv2.imwrite(os.path.join(output_test_boundary_dir, str(index).zfill(3) + ".png"), simulated_boundary[:,:, index])
+    cv2.imwrite(os.path.join(output_test_boundary_dir, str(320 + 1 + index).zfill(3) + ".png"), simulated_boundary[:,:, index])
