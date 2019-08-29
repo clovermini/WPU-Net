@@ -26,6 +26,10 @@ Usage Demo:
     # train WPU-Net
     python segmentation/trainer.py --input="<path to your dataset>" --bs=24 --loss="<abw/cbw>" --epochs 500 --ml
 
+Pre-train download:  
+
+For wpunet segmentation, you can download at [Baidu Pan](https://pan.baidu.com/s/1_xCiSQe0tXhDP0cMnUPp5A) (The key is 'ttah') or [Google Drive](https://drive.google.com/file/d/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr/view?usp=sharing), you should unzip it at './segmentation/'.   
+For grain track, you can download at [Baidu Pan](https://pan.baidu.com/s/1hBVOt21wxi_8HUOlPyg_Vw) (The key is 'k6b1') or [Google Drive](), you should unzip it at './grain_track/'..   
 
 ## Visualization
 
