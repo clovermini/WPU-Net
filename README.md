@@ -23,7 +23,7 @@ Usage Demo:
     python main.py --train_data_pattern="<path to train .tfrecord>" --model=train
 
 Parameters Download:  
-For segmentation, you can downlaod pre-train parameteres at [Baidu Pan](https://pan.baidu.com/s/1PbCDkg6ypNf_lWDscUidJQ) (The Key is '6v3f') or [Google Drive]().  
+For segmentation, you can downlaod pre-train parameteres at [Baidu Pan](https://pan.baidu.com/s/1PbCDkg6ypNf_lWDscUidJQ) (The Key is '6v3f') or [Google Drive](https://drive.google.com/file/d/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr/view?usp=sharing).  
 For grian track, you can download pre-train parameters at [Baidu Pan](https://pan.baidu.com/s/1Lto1SteGVXm-35GNnA1z2Q) (The key is 'b5iw') or [Google Drive]().  
 
 ## Visualization
