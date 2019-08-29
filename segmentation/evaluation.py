@@ -3,6 +3,8 @@ import gala.evaluate as ev
 from skimage.measure import label
 import time, os, cv2
 
+cwd = os.getcwd()
+
 def get_figure_of_merit(pred, mask, const_index=0.1):
     """
     Use figure of merit to evaluate the edge detection quality of proposed method
@@ -81,15 +83,21 @@ def get_map_2018kdasb_new(pred, mask, target_image=0):
         mask[-1, :] = 255
         mask[:, -1] = 255
 
+        # 预处理，为保证按照每个实例进行识别，需要label,所以统一前背景
+        mask = 255 - mask
+        pred = 255 - pred
+
     label_mask, num_mask = label(mask, neighbors=4, background=0, return_num=True)
     label_pred, num_pred = label(pred, neighbors=4, background=0, return_num=True)
 
     for i_pred in range(1, num_pred + 1):
-        intersect_mask_labels = list(np.unique(label_mask[label_pred == i_pred]))    # Get all the labels that intersect with it
+        intersect_mask_labels = list(
+            np.unique(label_mask[label_pred == i_pred]))  # Get all the labels that intersect with it
         if 0 in intersect_mask_labels:
             intersect_mask_labels.remove(0)
 
-        if len(intersect_mask_labels) == 0:  # If a label of pred does not have a corresponding label intersect with it in mask, pass
+        if len(
+                intersect_mask_labels) == 0:  # If a label of pred does not have a corresponding label intersect with it in mask, pass
             continue
 
         intersect_mask_label_area = np.zeros((len(intersect_mask_labels), 1))
@@ -111,9 +119,7 @@ def get_map_2018kdasb_new(pred, mask, target_image=0):
     return map_score
 
 
-gt_dir = "./datasets/test/manual/"
-
-def eval_RI_VI(results_dir, outAd):
+def eval_RI_VI(results_dir, outAd, gt_dir=os.path.join(cwd, '../datasets/segmentation/net_test/test/labels/')):
     """
     :param results_dir: address for network outputs
     :param outAd: save directory for evaluation results
@@ -121,6 +127,7 @@ def eval_RI_VI(results_dir, outAd):
     """
 
     results_path = sorted(os.listdir(results_dir))
+    print(results_path)
 
     mRI = 0
     mad_RI = 0
@@ -135,6 +142,7 @@ def eval_RI_VI(results_dir, outAd):
     for r in results_path:
         name = r.split(".")[0]
         gt_path = os.path.join(gt_dir, name + ".png")
+        print(gt_path)
         if os.path.exists(gt_path):
             count += 1
 
@@ -172,8 +180,7 @@ def eval_RI_VI(results_dir, outAd):
           "average merger_error : ", m_merger_error / count, "average split_error : ", m_split_error / count)
 
 
-def eval_F_mapKaggle(results_dir, outAd):
-
+def eval_F_mapKaggle(results_dir, outAd, gt_dir=os.path.join(cwd, '../datasets/segmentation/net_test/test/labels/')):
     results_path = sorted(os.listdir(results_dir))
     F = 0
     mAP = 0
@@ -209,11 +216,10 @@ def eval_F_mapKaggle(results_dir, outAd):
     mAP = mAP / count
     print("count ", count, " average F : ", F, "average mAP : ", mAP)
 
-
 if __name__ == '__main__':
     RI_save_dir = "./evaluation/big_RI_VI/"
     Map_save_dir = "./evaluation/big_F_mAP/"
 
-    print("WPU_Net" + "#####"*20)
-    eval_RI_VI("./result_total/WPU_Net/", RI_save_dir+"WPU_Net.txt")
-    eval_F_mapKaggle("./result_total/WPU_Net/", Map_save_dir+"WPU_Net.txt")
+    print("WPU_Net_model " + "#####"*20)
+    eval_RI_VI("./result_total/WPU_Net_model/", RI_save_dir+"WPU_Net_model.txt")
+    eval_F_mapKaggle("./result_total/WPU_Net_model/", Map_save_dir+"WPU_Net_model.txt")

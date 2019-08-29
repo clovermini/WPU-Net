@@ -60,17 +60,24 @@ class UNet(nn.Module):
 
 # WPU-Net  Pytorch implementation of our paper. It is implemented based on the U-Net code above.
 class WPU_Net(nn.Module):
-    def __init__(self, num_channels=1, num_classes=2):
+    def __init__(self, num_channels=2, num_classes=2, multi_layer=True):
         super(WPU_Net, self).__init__()
         num_feat = [64, 128, 256, 512, 1024]
+        self.multi_layer = multi_layer
+        print('multi_layer ', self.multi_layer)
 
         self.down1 = Conv3x3(num_channels, num_feat[0])
 
-        self.down2 = Conv3x3(num_feat[0] + 1, num_feat[1])
+        if self.multi_layer:
+            addition = 1
+        else:
+            addition = 0
 
-        self.down3 = Conv3x3(num_feat[1] + 1, num_feat[2])
+        self.down2 = Conv3x3(num_feat[0] + addition, num_feat[1])
 
-        self.down4 = Conv3x3(num_feat[2] + 1, num_feat[3])
+        self.down3 = Conv3x3(num_feat[1] + addition, num_feat[2])
+
+        self.down4 = Conv3x3(num_feat[2] + addition, num_feat[3])
 
         self.bottom = nn.Sequential(nn.MaxPool2d(kernel_size=2), Conv3x3(num_feat[3], num_feat[4]))
 
@@ -96,17 +103,22 @@ class WPU_Net(nn.Module):
         inputs = torch.cat([inputs, last], 1)
         down1_feat = self.down1(inputs)
 
-        down2_last = self.pool(last)
-        down2_pool = torch.cat([self.pool(down1_feat), down2_last], 1)
-        down2_feat = self.down2(down2_pool)
+        if self.multi_layer:
+            down2_last = self.pool(last)
+            down2_pool = torch.cat([self.pool(down1_feat), down2_last], 1)
+            down2_feat = self.down2(down2_pool)
 
-        down3_last = self.pool(down2_last)
-        down3_pool = torch.cat([self.pool(down2_feat), down3_last], 1)
-        down3_feat = self.down3(down3_pool)
+            down3_last = self.pool(down2_last)
+            down3_pool = torch.cat([self.pool(down2_feat), down3_last], 1)
+            down3_feat = self.down3(down3_pool)
 
-        down4_last = self.pool(down3_last)
-        down4_pool = torch.cat([self.pool(down3_feat), down4_last], 1)
-        down4_feat = self.down4(down4_pool)
+            down4_last = self.pool(down3_last)
+            down4_pool = torch.cat([self.pool(down3_feat), down4_last], 1)
+            down4_feat = self.down4(down4_pool)
+        else:
+            down2_feat = self.down2(self.pool(down1_feat))
+            down3_feat = self.down3(self.pool(down2_feat))
+            down4_feat = self.down4(self.pool(down3_feat))
 
         bottom_feat = self.bottom(down4_feat)
 
@@ -121,8 +133,6 @@ class WPU_Net(nn.Module):
 
         outputs = self.final(up4_feat)
         return outputs
-
-
 
 class Conv3x3(nn.Module):
     def __init__(self, in_feat, out_feat):

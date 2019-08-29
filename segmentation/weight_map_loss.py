@@ -29,16 +29,18 @@ def get_bck_dis_weight(dis_map, w0=10, eps=1e-20):
     weight_matrix = w0 * np.exp(-1 * pow((max_dis - dis_map), 2) / (2 * pow(std, 2)))
     return weight_matrix
 
-def caculate_weight_map(maskAddress, saveAddress, weight_cof = 30):
+def caculate_weight_map(maskAddress, saveAddress='', weight_cof = 30):
     """
     计算真值图对应的权重图  Calculate the weight map corresponding to the mask image
-    :param maskAddress:  Address for mask image
+    :param maskAddress:  Address for mask image or np array
     :param saveAddress:  save directory
     :param weight_cof:  weight for class balance plus w0
     :return:  "adaptive_dis_weight" is the weight map for loss   "adaptive_bck_dis_weight_norm" is the weight map for last information
     """
-
-    mask = cv2.imread(maskAddress, 0)
+    if isinstance(maskAddress,str):
+        mask = cv2.imread(maskAddress, 0)
+    else:
+        mask = maskAddress
     labeled, label_num = label(mask, neighbors=4, background=255, return_num=True)
     image_props = regionprops(labeled, cache=False)
     dis_trf = ndimage.distance_transform_edt(255 - mask)
@@ -61,25 +63,26 @@ def caculate_weight_map(maskAddress, saveAddress, weight_cof = 30):
     adaptive_obj_dis_weight = adaptive_obj_dis_weight[:, :, np.newaxis]
     adaptive_dis_weight = np.concatenate((adaptive_bck_dis_weight, adaptive_obj_dis_weight), axis=2)
 
-    np.save(os.path.join(saveAddress, "weight_map_loss.npy"), adaptive_dis_weight)
+    #np.save(os.path.join(saveAddress, "weight_map_loss.npy"), adaptive_dis_weight)
 
-    print("adaptive_obj_dis_weight range ", np.max(adaptive_obj_dis_weight), " ", np.min(adaptive_obj_dis_weight))
-    print("adaptive_bck_dis_weight range ", np.max(adaptive_bck_dis_weight), " ", np.min(adaptive_bck_dis_weight))
+    #print("adaptive_obj_dis_weight range ", np.max(adaptive_obj_dis_weight), " ", np.min(adaptive_obj_dis_weight))
+    #print("adaptive_bck_dis_weight range ", np.max(adaptive_bck_dis_weight), " ", np.min(adaptive_bck_dis_weight))
 
     # get weight for last information
+    adaptive_bck_dis_weight = adaptive_bck_dis_weight[:,:,0]
     bck_maxinum = np.max(adaptive_bck_dis_weight)
     bck_mininum = np.min(adaptive_bck_dis_weight)
     adaptive_bck_dis_weight_norm = (adaptive_bck_dis_weight - bck_mininum) / (bck_maxinum - bck_mininum)
     adaptive_bck_dis_weight_norm = (1 - adaptive_bck_dis_weight_norm) * (-7) + 1
 
-    np.save(os.path.join(saveAddress, "weight_map_last.npy"), adaptive_bck_dis_weight_norm)
+    #np.save(os.path.join(saveAddress, "weight_map_last.npy"), adaptive_bck_dis_weight_norm)
 
     return adaptive_dis_weight, adaptive_bck_dis_weight_norm
 
 
 class WeightMapLoss(nn.Module):
     """
-    calculate weights with weight maps in two channels
+    calculate weighted loss with weight maps in two channels
     """
 
     def __init__(self, _eps=1e-20, _dilate_cof=1):
@@ -106,9 +109,13 @@ class WeightMapLoss(nn.Module):
             elif method == 4:  # 自适应对比晶界加权（bck也加权） Adaptive weighted loss described in our paper (bck is is also weighted)
                 temp_weight_bck = weight_maps[:, 0, :, :]
                 temp_weight_obj = weight_maps[:, 1, :, :]
+#                 print('WeightMapLoss mask ', mask.shape)
+#                 print('WeightMapLoss temp_weight_bck ', temp_weight_bck.shape)
                 weight_obj[temp_weight_obj >= temp_weight_bck] = temp_weight_obj[temp_weight_obj >= temp_weight_bck]
                 weight_obj = mask * weight_obj
                 weight_bck[weight_obj <= temp_weight_bck] = temp_weight_bck[weight_obj <= temp_weight_bck]
+#                 print('WeightMapLoss weight_bck ', weight_bck.shape)
+                
             elif method == 5:  # 自适应对比晶界加权（bck为1）  Adaptive weighted loss described in our paper (bck is set to 1)
                 temp_weight_bck = weight_maps[:, 0, :, :]
                 temp_weight_obj = weight_maps[:, 1, :, :]
@@ -132,7 +139,7 @@ class WeightMapLoss(nn.Module):
         """
         target: The target map, LongTensor, unique(target) = [0 1]
         weight_maps: The weights for two channels，weight_maps = [weight_bck_map, weight_obj_map]
-        method：control the method of weight calculation
+        method：Select the type of loss function
         """
         mask = target.float()
         if -1 < method <= 6:  # WCE
@@ -149,10 +156,10 @@ class WeightMapLoss(nn.Module):
     
     def show_weight(self, target, weight_maps, method=0):
         """
-        Return the weights
+        For insurance purposes, visualize weight maps
         target: The target map, LongTensor, unique(target) = [0 1]
         weight_maps: The weights for two channels，weight_maps = [weight_bck_map, weight_obj_map]
-        method：control the method of weight calculation
+        method：Select the type of loss function
         """
         mask = target.float()
         if -1 < method <= 6: # WCE

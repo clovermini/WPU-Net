@@ -6,16 +6,39 @@ import torchvision.transforms.functional as F
 from skimage import morphology as sm
 import torchvision.transforms as tr
 
+random.seed(2019)
+
 transform = tr.Compose([
     tr.ToTensor(),
-    tr.Normalize(mean = [ 0.94034111, 0.94034111, 0.94034111 ],    # RGB
-                std = [ 0.12718913, 0.12718913, 0.12718913 ])
+    tr.Normalize(mean = [ 0.9336267],    # RGB
+                std = [ 0.1365774])
 ])
 
+cwd = os.getcwd()
+
+#  img=dilate(img,int((_dilation-1)/2))
 def dilate_mask(mask, iteration=1):
     for i in range(0, iteration):
         mask = sm.dilation(mask, sm.square(3))
     return mask
+
+def get_expansion(label, dil_conf=18):
+    '''
+    function：get the mask dilation  
+    :param label: original single-pixel mask
+    :param dil_conf: hyperparameter expansion ratio
+    :return: expansion: return the mask dilation
+    '''
+    
+#     print('get_expansion: label 1', np.unique(label))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (dil_conf, dil_conf))
+    label_dilate = cv2.dilate(label, kernel)
+#     print('get_expansion: label 2', np.unique(label))
+    expansion = np.ones(label.shape)*255
+    expansion[label_dilate == 255] = 125
+    expansion[label == 255] = 0
+#     print('get_expansion: expansion', np.unique(expansion))
+    return expansion
 
 def getImg(img_path):
     """
@@ -30,8 +53,35 @@ def getImg(img_path):
         img = Image.open(img_path).convert('L')
     return img
 
+def getMeanAndStd(image_path):
+    '''
+    计算图像的归一化参数 用于预处理
+    mean and std is caculated for data 
+    :param image_path:  Address for images, noted that the value of images should be [0, 1]
+    :return: mean and std for data 
+    '''
+    count = 0
+    images = os.listdir(os.path.join(image_path))
+    print(len(images))
+    
+    mean = 0
+    std = 0
+    for item in images:
+        if item.endswith('tif') or item.endswith('png'):  
+            count += 1
+            image = cv2.imread(os.path.join(image_path, item), 0)/255
+            #print(np.unique(image))
+            assert np.max(np.unique(image)) <= 1
+            mean += np.mean(image)
+            std += np.std(image)
+    mean /= count
+    std /= count
+    print('count ', count, ' mean : ', mean, ' std : ', std)  
+    return mean, std 
+    
+
 def proprecess_img(image):
-    image = Image.open(image)
+    image = Image.open(image).convert('L')
     tensor = transform(image).resize_(1,1,image.size[1],image.size[0])
     return tensor
 
@@ -55,8 +105,8 @@ def posprecess(output, close=False):
 
 # cropping
 def tailor(sizeX, sizeY, oriAddress, saveAddress, region = 32):
-    img_name = oriAddress.split("/")[-1].split(".")[0]
-    print("file : ", img_name)
+    img_name = oriAddress.split("\\")[-1].split(".")[0]
+    print("you are cropping picture : ", oriAddress)
     image_last = Image.open(oriAddress)
 
     (w_image, h_image) = image_last.size
@@ -117,7 +167,6 @@ def getXAndY(name, pieceAddress):
 def stitch(sizeX, sizeY, name, pieceAddress, saveRoad, region = 16):
     tmpX = getXAndY(name, pieceAddress)[0]
     tmpY = getXAndY(name, pieceAddress)[1]
-    print(tmpX, " ", tmpY)
     resultWidth = sizeX*(tmpY+1)
     resultHeight = sizeY*(tmpX+1)
     result = Image.new("RGB", (resultWidth, resultHeight))
@@ -141,7 +190,7 @@ def stitch(sizeX, sizeY, name, pieceAddress, saveRoad, region = 16):
     result.save(saveRoad)
     return result
 
-def rand_crop(data, label, height, width, last=None, weight=None):
+def rand_crop(data, label, height, width, last=None):
     """
     Random crop for original image, corresponding label, and others
     :param data:  Original image
@@ -157,6 +206,7 @@ def rand_crop(data, label, height, width, last=None, weight=None):
     random_w = random.randint(0, data.size[1] - width)
 
     box = (random_h, random_w, (random_h + height), (random_w + width))
+    #print('crop box : ', box)
 
     # Crop for PIL.Image object
     data = data.crop(box)
@@ -164,14 +214,13 @@ def rand_crop(data, label, height, width, last=None, weight=None):
 
     if last is not None:
         # Crop for numpy array
-        last = last[random_w: random_w + width, random_h: random_h + height]
-        weight = weight[random_w: random_w + width, random_h: random_h + height, :]
-        return data, label, last, weight
+        last = last.crop(box)
+        return data, label, last
 
     return data, label
 
 
-def rand_rotation(data, label, last=None, weight=None):
+def rand_rotation(data, label, last=None):
     """
     Random rotation for original image, corresponding label, and others
     :param data:  Original image
@@ -182,19 +231,19 @@ def rand_rotation(data, label, last=None, weight=None):
     """
     # 随机选择旋转角度  Randomly select the rotation angle
     angle = random.choice([0, 90, 180, 270])
+    #print('rotation angle ', angle)
 
     data = F.rotate(data, angle, expand=True)
     label = F.rotate(label, angle, expand=True)
 
     if last is not None:
-        last = np.rot90(last, k=angle / 90)
-        weight = np.rot90(weight, k=angle / 90)
-        return data, label, last, weight
+        last = F.rotate(last, angle, expand=True)
+        return data, label, last
 
     return data, label
 
 
-def rand_verticalFlip(data, label, last=None, weight=None):
+def rand_verticalFlip(data, label, last=None):
     """
     Random vertical flip for original image, corresponding label, and others
     :param data:  Original image
@@ -209,15 +258,14 @@ def rand_verticalFlip(data, label, last=None, weight=None):
         label = F.vflip(label)
 
         if last is not None:
-            last = np.flip(last, 0)
-            weight = np.flip(weight, 0)
+            last = F.vflip(last)
 
     if last is not None:
-        return data, label, last, weight
+        return data, label, last
 
     return data, label
 
-def rand_horizontalFlip(data, label, last=None, weight=None):
+def rand_horizontalFlip(data, label, last=None):
     """
     Random horizontal flip for original image, corresponding label, and others
     :param data:  Original image
@@ -232,10 +280,9 @@ def rand_horizontalFlip(data, label, last=None, weight=None):
         label = F.hflip(label)
 
         if last is not None:
-            last = np.flip(last, 1)
-            weight = np.flip(weight, 1)
+            last = F.hflip(last)
 
     if last is not None:
-        return data, label, last, weight
+        return data, label, last
 
     return data, label
