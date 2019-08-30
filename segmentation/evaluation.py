@@ -119,7 +119,7 @@ def get_map_2018kdasb_new(pred, mask, target_image=0):
     return map_score
 
 
-def eval_RI_VI(results_dir, outAd, gt_dir=os.path.join(cwd, '../datasets/segmentation/net_test/test/labels/')):
+def eval_RI_VI(results_dir, outAd, gt_dir=os.path.join(cwd, 'datasets', 'segmentation', 'net_test', 'test', 'labels')):
     """
     :param results_dir: address for network outputs
     :param outAd: save directory for evaluation results
@@ -180,7 +180,7 @@ def eval_RI_VI(results_dir, outAd, gt_dir=os.path.join(cwd, '../datasets/segment
           "average merger_error : ", m_merger_error / count, "average split_error : ", m_split_error / count)
 
 
-def eval_F_mapKaggle(results_dir, outAd, gt_dir=os.path.join(cwd, '../datasets/segmentation/net_test/test/labels/')):
+def eval_F_mapKaggle(results_dir, outAd, gt_dir=os.path.join(cwd, 'datasets', 'segmentation', 'net_test', 'test', 'labels')):
     results_path = sorted(os.listdir(results_dir))
     F = 0
     mAP = 0

@@ -38,13 +38,13 @@ def inference():
 
     key_name = 'WPU_Net_model'
 
-    if not os.path.exists('./segmentation/parameter/'):
+    if not os.path.exists(os.path.join(cwd, 'segmentation', 'parameter')):
         download_from_url(url='https://doc-0k-3k-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/c4ag025396gf90cp0rt7vcaci3ml4teo/1567137600000/03563112468744709654/*/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr?e=download',
-                          filename='wpu_net_parameters.zip', save_dir=os.path.join(cwd, 'segmentation/'))
+                          filename='wpu_net_parameters.zip', save_dir=os.path.join(cwd, 'segmentation'))
 
-    model_path = "./segmentation/parameter/" + key_name + "/best_model_state.pth"
-    result_save_dir = "./segmentation/result/" + key_name + '/'
-    result_total_save_dir = "./segmentation/result_total/" + key_name + "/"
+    model_path = os.path.join(cwd, 'segmentation', 'parameter', key_name, 'best_model_state.pth')
+    result_save_dir = os.path.join(cwd, 'segmentation', 'result', key_name)
+    result_total_save_dir = os.path.join(cwd, 'segmentation', 'result_total', key_name)
 
     if not os.path.exists(result_save_dir):
         os.makedirs(result_save_dir)
@@ -65,18 +65,18 @@ def inference():
     start_time = time.time()
     count = 0
     min_file = 149  # 1  117  149
-    max_file = 153  # 116  148  296
+    max_file = 296  # 116  148  296
     for item in images:
         if item.endswith(".png"):
             filename = item.split(".")[0]
             pic_num = item.split("_")[0]
             if int(pic_num) > min_file and int(pic_num) <= max_file:
                 count += 1
-                test_image = os.path.join(output_test_crop_dir, "images/" + filename + ".png")
+                test_image = os.path.join(output_test_crop_dir, "images", filename + ".png")
                 img = proprecess_img(test_image)
                 # last mask
                 last_name = str(int(pic_num) - 1).zfill(3) + '_' + filename.split('_')[1] + '_' + filename.split('_')[2]
-                last_mask = cv2.imread(os.path.join(output_test_crop_dir, "labels/" + last_name + ".png"), 0)
+                last_mask = cv2.imread(os.path.join(output_test_crop_dir, "labels", last_name + ".png"), 0)
                 last_tensor = torch.Tensor(np.array(last_mask)).unsqueeze(0).unsqueeze(0)
                 last_tensor[last_tensor == 255] = -6
                 last_tensor[last_tensor == 0] = 1
@@ -97,13 +97,13 @@ def inference():
             name = img.split(".")[0]
             if int(name) > min_file and int(name) <= max_file:
                 print('you are stitching picture ', name)
-                stitch(256, 256, name, result_save_dir, result_total_save_dir + name + ".png", 32)
+                stitch(256, 256, name, result_save_dir, os.path.join(result_total_save_dir, name + ".png"), 32)
                 n += 1
     print("end...")
 
     # evaluate
-    RI_save_dir = "./segmentation/evaluations/big_RI_VI/"
-    Map_save_dir = "./segmentation/evaluations/big_F_mAP/"
+    RI_save_dir = os.path.join(cwd, 'segmentation', 'evaluations', 'big_RI_VI')
+    Map_save_dir = os.path.join(cwd, 'segmentation', 'evaluations', 'big_F_mAP')
 
     if not os.path.exists(RI_save_dir):
         os.makedirs(RI_save_dir)
@@ -113,8 +113,8 @@ def inference():
 
     print(key_name + " model " + "#####" * 20)
 
-    eval_RI_VI("./segmentation/result_total/"+key_name+"/",  RI_save_dir + key_name + ".txt", gt_dir=os.path.join(cwd, 'datasets/segmentation/net_test/test/labels/'))
-    eval_F_mapKaggle("./segmentation/result_total/"+key_name+"/", Map_save_dir + key_name + ".txt", gt_dir=os.path.join(cwd, 'datasets/segmentation/net_test/test/labels/'))
+    eval_RI_VI(os.path.join(cwd, 'segmentation', 'result_total', key_name),  os.path.join(RI_save_dir, key_name + ".txt"), gt_dir=os.path.join(cwd, 'datasets', 'segmentation', 'net_test', 'test', 'labels'))
+    eval_F_mapKaggle(os.path.join(cwd, 'segmentation', 'result_total', key_name), os.path.join(Map_save_dir, key_name + ".txt"), gt_dir=os.path.join(cwd, 'datasets', 'segmentation', 'net_test', 'test', 'labels'))
 
 
 def grain_track_for_gt():
