@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torchvision.transforms as tr
 from segmentation.model import UNet, WPU_Net
-from segmentation.tools import posprecess, stitch, proprecess_img, tailor, get_expansion
+from segmentation.tools import posprecess, stitch, proprecess_img, tailor, download_from_url
 import time
 from segmentation.evaluation import eval_RI_VI, eval_F_mapKaggle
 
@@ -37,6 +37,10 @@ def inference():
         tailor(256, 256, os.path.join(output_test_dir, 'labels', item), os.path.join(output_test_crop_dir, 'labels'),region=32)
 
     key_name = 'WPU_Net_model'
+
+    if not os.path.exists('./segmentation/parameter/'):
+        download_from_url(url='https://drive.google.com/file/d/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr/view?usp=sharing',
+                          filename='wpu_net_parameters.zip', save_dir=os.path.join(cwd, 'segmentation/'))
 
     model_path = "./segmentation/parameter/" + key_name + "/best_model_state.pth"
     result_save_dir = "./segmentation/result/" + key_name + '/'
@@ -119,6 +123,9 @@ def grain_track_for_gt():
     """
     cwd = os.getcwd()
     parameter_address = os.path.join(cwd, "grain_track", "parameter")
+    if not os.path.exists(parameter_address):
+        download_from_url(url='https://drive.google.com/file/d/1dhwSwmxDKBwub9Wi4DPXpJotnHrNOyaL/view?usp=sharing',
+                          filename='grain_track_parameters.zip', save_dir=os.path.join(cwd, 'grain_track/'))
     cnn_device = "cuda:0"
 
     # Performance of tracking on real data set with different algorithms.
@@ -265,6 +272,11 @@ def grain_track_for_real_pred():
     label_stack_gt = np.load(input_address_gt)[:, :, 1: -1]  # 150 - 295
     label_stack_gt, label_num_gt = label(label_stack_gt, return_num=True)
     print("The number of grain in GT is {} and the shape is {}".format(label_num_gt, label_stack_gt.shape))
+
+    parameter_address = os.path.join(cwd, "grain_track", "parameter")
+    if not os.path.exists(parameter_address):
+        download_from_url(url='https://drive.google.com/file/d/1dhwSwmxDKBwub9Wi4DPXpJotnHrNOyaL/view?usp=sharing',
+                          filename='grain_track_parameters.zip', save_dir=os.path.join(cwd, 'grain_track/'))
 
     pretrain_address = os.path.join(cwd, "grain_track", "parameter",
                                     "real_densenet161.pkl")  # we only test this tracking method

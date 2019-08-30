@@ -3,14 +3,17 @@ import cv2
 import h5py
 import numpy as np
 from grain_track import utility
-from segmentation.tools import tailor
+from segmentation.tools import tailor, download_from_url
 
 
 cwd = os.getcwd()
 
 # We generate train and val data from "pure_iron_grain_data_sets.hdf5"
 # 我们从 "pure_iron_grain_data_sets.hdf5"生成训练和验证数据
-file_h5 = h5py.File("pure_iron_grain_data_sets.hdf5", "r")
+data_dir = "pure_iron_grain_data_sets.hdf5"
+if not os.path.exists(data_dir):
+    download_from_url(url='https://drive.google.com/file/d/1G0KekPURcOmVVnelMvkw_FF-75DMkmjo/view?usp=sharing', filename=data_dir, save_dir=cwd)
+file_h5 = h5py.File(data_dir, "r")
 
 real_image = file_h5['real']['image']
 real_label = file_h5["real"]["label"]

@@ -5,6 +5,9 @@ import torch, cv2, os
 import torchvision.transforms.functional as F
 from skimage import morphology as sm
 import torchvision.transforms as tr
+from six.moves import urllib
+import sys
+import zipfile
 
 random.seed(2019)
 
@@ -15,6 +18,25 @@ transform = tr.Compose([
 ])
 
 cwd = os.getcwd()
+
+# download data from url
+def download_from_url(url, filename, save_dir):
+    def _progress(block_num, block_size, total_size):
+        '''回调函数
+           @block_num: 已经下载的数据块
+           @block_size: 数据块的大小
+           @total_size: 远程文件的大小
+        '''
+        sys.stdout.write('\r>> Downloading %s %.1f%%' % (filename, float(block_num * block_size) / float(total_size) * 100.0))
+
+    file_path, _ = urllib.request.urlretrieve(url, None, _progress)
+    # unzip the file
+    f = zipfile.ZipFile(file_path, 'r')
+    for file in f.namelist():
+        f.extract(file, save_dir)
+
+    print('download and unzip file ', filename, ' from url ', url, ' finished.')
+
 
 #  img=dilate(img,int((_dilation-1)/2))
 def dilate_mask(mask, iteration=1):
