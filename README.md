@@ -20,6 +20,9 @@ We opened up the material dataset we used in paper experiment. Hoping more and m
 
 Usage Demo:
 
+    # generate datasets
+    python data_generator.py
+    
     # inference
     python main.py
 
