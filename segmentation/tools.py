@@ -27,14 +27,16 @@ def download_from_url(url, filename, save_dir):
            @block_size: 数据块的大小
            @total_size: 远程文件的大小
         '''
-        sys.stdout.write('\r>> Downloading %s %.1f%%' % (filename, float(block_num * block_size) / float(total_size) * 100.0))
-
+        per = 100 * float(block_num * block_size) / float(total_size)
+        if per > 100:
+            per = 100
+        # sys.stdout.write('\r>> Downloading %s %.1f%%' % (filename, per))
+    print("Downloading ... ")
     file_path, _ = urllib.request.urlretrieve(url, None, _progress)
     # unzip the file
     f = zipfile.ZipFile(file_path, 'r')
     for file in f.namelist():
         f.extract(file, save_dir)
-
     print('download and unzip file ', filename, ' from url ', url, ' finished.')
 
 

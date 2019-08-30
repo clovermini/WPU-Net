@@ -12,7 +12,7 @@ cwd = os.getcwd()
 # 我们从 "pure_iron_grain_data_sets.hdf5"生成训练和验证数据
 data_dir = "pure_iron_grain_data_sets.hdf5"
 if not os.path.exists(data_dir):
-    download_from_url(url='https://drive.google.com/file/d/1G0KekPURcOmVVnelMvkw_FF-75DMkmjo/view?usp=sharing', filename=data_dir, save_dir=cwd)
+    download_from_url(url='https://doc-00-3k-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/51jfsmsfpjal1l3rob0i2p7t8eh1d2g3/1567137600000/03563112468744709654/*/1G0KekPURcOmVVnelMvkw_FF-75DMkmjo?e=download', filename=data_dir, save_dir=cwd)
 file_h5 = h5py.File(data_dir, "r")
 
 real_image = file_h5['real']['image']
@@ -118,17 +118,18 @@ utility.make_out_dir(output_val_dir)
 utility.make_out_dir(output_test_dir)
 utility.make_out_dir(output_test_boundary_dir)
 
-real_train = real_label[:, :, 0: 116]
-print("The shape of real_train is {}".format(real_train.shape))
-positive_num, negative_num = utility.produce_two_slice_data(real_train, output_train_dir)
-# positive_num = 31482, negative_num = 107435
-print("For real train data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
-
-real_val = real_label[:, :, 116: 148]
-print("The shape of real_val is {}".format(real_val.shape))
-positive_num, negative_num = utility.produce_two_slice_data(real_val, output_val_dir)
-# positive_num = 8901, negative_num = 29960
-print("For real val data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
+# # It will spend too much time, uncomment it if you really want to use it
+# real_train = real_label[:, :, 0: 116]
+# print("The shape of real_train is {}".format(real_train.shape))
+# positive_num, negative_num = utility.produce_two_slice_data(real_train, output_train_dir)
+# # positive_num = 31482, negative_num = 107435
+# print("For real train data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
+#
+# real_val = real_label[:, :, 116: 148]
+# print("The shape of real_val is {}".format(real_val.shape))
+# positive_num, negative_num = utility.produce_two_slice_data(real_val, output_val_dir)
+# # positive_num = 8901, negative_num = 29960
+# print("For real val data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
 
 real_test = real_label[:, :, 148:]
 real_boundary = real_boundary[:, :, 148:]
@@ -151,17 +152,18 @@ utility.make_out_dir(output_val_dir)
 utility.make_out_dir(output_test_dir)
 utility.make_out_dir(output_test_boundary_dir)
 
-simulated_train = simulated_label[:, :, 0: 240]
-print("The shape of simulated_train is {}".format(simulated_train.shape))
-positive_num, negative_num = utility.produce_two_slice_data(simulated_train, output_train_dir)
-# positive_num = 42703, negative_num = 103785
-print("For simulated train data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
-
-simulated_val = simulated_label[:, :, 240: 320]
-print("The shape of simulated_val is {}".format(simulated_val.shape))
-positive_num, negative_num = utility.produce_two_slice_data(simulated_val, output_val_dir)
-# positive_num = 14616, negative_num = 35458
-print("For simulated val data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
+# # It will spend too much time, uncomment it if you really want to use it
+# simulated_train = simulated_label[:, :, 0: 240]
+# print("The shape of simulated_train is {}".format(simulated_train.shape))
+# positive_num, negative_num = utility.produce_two_slice_data(simulated_train, output_train_dir)
+# # positive_num = 42703, negative_num = 103785
+# print("For simulated train data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
+#
+# simulated_val = simulated_label[:, :, 240: 320]
+# print("The shape of simulated_val is {}".format(simulated_val.shape))
+# positive_num, negative_num = utility.produce_two_slice_data(simulated_val, output_val_dir)
+# # positive_num = 14616, negative_num = 35458
+# print("For simulated val data, we have {} positive num and {} negative num.".format(positive_num, negative_num))
 
 simulated_test = simulated_label[:, :, 320:]
 simulated_boundary = simulated_boundary[:, :, 320:]

@@ -39,7 +39,7 @@ def inference():
     key_name = 'WPU_Net_model'
 
     if not os.path.exists('./segmentation/parameter/'):
-        download_from_url(url='https://drive.google.com/file/d/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr/view?usp=sharing',
+        download_from_url(url='https://doc-0k-3k-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/c4ag025396gf90cp0rt7vcaci3ml4teo/1567137600000/03563112468744709654/*/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr?e=download',
                           filename='wpu_net_parameters.zip', save_dir=os.path.join(cwd, 'segmentation/'))
 
     model_path = "./segmentation/parameter/" + key_name + "/best_model_state.pth"
@@ -124,7 +124,7 @@ def grain_track_for_gt():
     cwd = os.getcwd()
     parameter_address = os.path.join(cwd, "grain_track", "parameter")
     if not os.path.exists(parameter_address):
-        download_from_url(url='https://drive.google.com/file/d/1dhwSwmxDKBwub9Wi4DPXpJotnHrNOyaL/view?usp=sharing',
+        download_from_url(url='https://doc-08-3k-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/77lk68r7uoskmfilgeq0f39rvqpco6pm/1567137600000/03563112468744709654/*/1dhwSwmxDKBwub9Wi4DPXpJotnHrNOyaL?e=download',
                           filename='grain_track_parameters.zip', save_dir=os.path.join(cwd, 'grain_track/'))
     cnn_device = "cuda:0"
 

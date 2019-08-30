@@ -218,7 +218,7 @@ def crop_two_slice_data(last_image, last_label, this_image, this_label):
     temp[:, :, 0][last_image == last_label] = 255
     temp[:, :, 1][this_image == this_label] = 255
     temp_label = label(temp, background=0)
-    props = regionprops(temp_label, coordinates="rc", cache=True)
+    props = regionprops(temp_label, cache=True)
     min_row, min_col, min_depth, max_row, max_col, max_depth = props[0].bbox
     return temp[min_row:max_row, min_col: max_col, min_depth: max_depth]
 
