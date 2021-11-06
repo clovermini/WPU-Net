@@ -1,9 +1,11 @@
+import sys
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import os
 import random
+sys.path.append(os.getcwd())
 from segmentation.data import IronDataset
 import torchvision.transforms as tr
 from torch.utils.data import DataLoader
@@ -16,7 +18,7 @@ from skimage import morphology
 import argparse
 
 cwd = os.getcwd()
-
+# print(cwd)
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # 通过设置随机种子的办法使得pytorch 实验效果可以复制，即使是使用了随机裁剪
@@ -239,7 +241,7 @@ class Trainer(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='WPU-Net training')
-    parser.add_argument('--input', type=str, default=os.path.join(cwd, "../", "datasets", "segmentation", "net_train"), help="dataset dir")
+    parser.add_argument('--input', type=str, default=os.path.join(cwd, "/", "../datasets", "segmentation", "net_train"), help="dataset dir")
     parser.add_argument("--bs", type=int, default=24, help="batch size")
     parser.add_argument("--loss", type=str, default="abw", help="abw/cbw")
     parser.add_argument('--epochs', type=int, default=500, help="epochs")
@@ -251,7 +253,7 @@ if __name__ == "__main__":
     test_baseline = 10000
     st_time = time.time()
     # model save address
-    checkpoint_path = './parameter/WPU_Net_model/'
+    checkpoint_path = './segmentation/parameter/WPU_Net_model/'
     if not os.path.exists(checkpoint_path):
         os.mkdir(checkpoint_path)
     trainer = Trainer(bs=args.bs, loss_type=args.loss, multi_layer=args.ml, data_dir=args.input)

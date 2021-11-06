@@ -41,7 +41,7 @@ def caculate_weight_map(maskAddress, saveAddress='', weight_cof = 30):
         mask = cv2.imread(maskAddress, 0)
     else:
         mask = maskAddress
-    labeled, label_num = label(mask, neighbors=4, background=255, return_num=True)
+    labeled, label_num = label(mask, background=255, return_num=True, connectivity=1)
     image_props = regionprops(labeled, cache=False)
     dis_trf = ndimage.distance_transform_edt(255 - mask)
     adaptive_obj_dis_weight = np.zeros(mask.shape, dtype=np.float32)

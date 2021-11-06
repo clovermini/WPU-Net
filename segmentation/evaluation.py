@@ -87,8 +87,8 @@ def get_map_2018kdasb_new(pred, mask, target_image=0):
         mask = 255 - mask
         pred = 255 - pred
 
-    label_mask, num_mask = label(mask, neighbors=4, background=0, return_num=True)
-    label_pred, num_pred = label(pred, neighbors=4, background=0, return_num=True)
+    label_mask, num_mask = label(mask, background=0, return_num=True, connectivity=1)
+    label_pred, num_pred = label(pred, background=0, return_num=True, connectivity=1)
 
     for i_pred in range(1, num_pred + 1):
         intersect_mask_labels = list(
@@ -153,8 +153,8 @@ def eval_RI_VI(results_dir, outAd, gt_dir=os.path.join(cwd, 'datasets', 'segment
             result = result[10:-10, 10:-10]
             gt = gt[10:-10, 10:-10]
 
-            result, num_result = label(result, background=255, neighbors=4, return_num=True)
-            gt, num_gt = label(gt, background=255, neighbors=4, return_num=True)
+            result, num_result = label(result, background=255, return_num=True, connectivity=1)
+            gt, num_gt = label(gt, background=255, return_num=True, connectivity=1)
 
             # false merges(缺失), false splits（划痕）
             merger_error, split_error = ev.split_vi(result, gt)

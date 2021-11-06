@@ -3,7 +3,7 @@ WPU-Net: Boundary learning by using weighted propagation in convolution network.
 <!-- This is the pytorch implementation of algorithm in paper https://arxiv.org/pdf/1905.09226.pdf. -->
 
 ## Abstract
-Deep learning has driven great progress in natural and biological image processing. However, in materials science and engineering, there are often some flaws and indistinctions in material microscopic images induced from complex sample preparation, even due to the material itself, hindering the detection of target objects. In this work, we propose WPU-net that redesign the architecture and weighted loss of U-Net to force the network to integrate information from adjacent slices and pay more attention to the topology in this boundary detection task. Then, the WPU-net was applied into a typic material example, i.e., the grain boundary detection of polycrystalline material. Experiments demonstrate that the proposed method achieves promising performance and outperforms state-of-the-art methods. Besides, we propose a new method for object tracking between adjacent slices, which can effectively reconstruct the 3D structure of the whole material. Finally, we present a materials microscopic image dataset with the goal of advancing the state-of-the-art in image processing for materials sciences.
+Deep learning has driven great progress in natural and biological image processing. However, in materials science and engineering, there are often some flaws and indistinctions in material microscopic images induced from complex sample preparation, even due to the material itself, hindering the detection of target objects. In this work, we propose WPU-net that redesign the architecture and weighted loss of U-Net to force the network to integrate information from adjacent slices and pay more attention to the topology in this boundary detection task. Experiments demonstrate that the proposed method achieves promising performance and outperforms state-of-the-art methods. Moreover, we present a materials microscopic image dataset with the goal of advancing the state-of-the-art in image processing for materials sciences.
 
 ## Environment
 
@@ -31,7 +31,6 @@ Usage Demo:
 
 Pre-train parameters download:  
 For wpunet segmentation, you can download at [Baidu Pan](https://pan.baidu.com/s/1_xCiSQe0tXhDP0cMnUPp5A) (The key is 'ttah') or [Google Drive](https://drive.google.com/file/d/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr/view?usp=sharing), you should unzip it at './segmentation/'.   
-For grain track, you can download at [Baidu Pan](https://pan.baidu.com/s/1hBVOt21wxi_8HUOlPyg_Vw) (The key is 'k6b1') or [Google Drive](https://drive.google.com/open?id=1dhwSwmxDKBwub9Wi4DPXpJotnHrNOyaL), you should unzip it at './grain_track/'.   
 
 ## Visualization
 
