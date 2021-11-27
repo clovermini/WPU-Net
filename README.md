@@ -30,7 +30,7 @@ Usage Demo:
     python segmentation/trainer.py --input="<path to your dataset>" --bs=24 --loss="<abw/cbw>" --epochs 500 --ml
 
 Pre-train parameters download:  
-For wpunet segmentation, you can download at [Baidu Pan](https://pan.baidu.com/s/1XK2BjceRN-BPmarA8la_zg) (The key is '5ask') or [Google Drive](https://drive.google.com/file/d/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr/view?usp=sharing), you should unzip it at './segmentation/'.   
+For wpunet segmentation, you can download at [Baidu Pan](https://pan.baidu.com/s/13LXR25eWwgd-UbKIhLsGvA) (The key is '4yx7') or [Google Drive](https://drive.google.com/file/d/1Gc2j-DrJhX0E4fnvRItf95o0BXWQa-wr/view?usp=sharing), you should unzip it at './segmentation/'.   
 
 ## Visualization
 
