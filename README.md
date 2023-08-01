@@ -1,6 +1,6 @@
 # WPU-Net
-WPU-Net: Boundary learning by using weighted propagation in convolution network.
-<!-- This is the pytorch implementation of algorithm in paper https://arxiv.org/pdf/1905.09226.pdf. -->
+Boundary learning by using weighted propagation in convolution network.
+This is the PyTorch implementation of the algorithm in [paper](https://doi.org/10.1016/j.jocs.2022.101709).
 
 ## Abstract
 Deep learning has driven great progress in natural and biological image processing. However, in materials science and engineering, there are often some flaws and indistinctions in material microscopic images induced from complex sample preparation, even due to the material itself, hindering the detection of target objects. In this work, we propose WPU-net that redesign the architecture and weighted loss of U-Net to force the network to integrate information from adjacent slices and pay more attention to the topology in this boundary detection task. Experiments demonstrate that the proposed method achieves promising performance and outperforms state-of-the-art methods. Moreover, we present a materials microscopic image dataset with the goal of advancing the state-of-the-art in image processing for materials sciences.
@@ -41,9 +41,25 @@ The example results of WPU-Net algorithm is shown as follows:
 </p>
 
 ## Citation
-<!--
-If you find our work is useful for your research, Please be kind to cite it. Thanks. 
 
-    Ma B, Liu C, Wei X, et al. WPU-Net: Boundary learning by using weighted propagation in convolution network[J]. arXiv preprint arXiv:1905.09226, 2019.
--->
-This paper is in submission....
+If you find our work useful for your research, Please be kind to cite it. Thanks. 
+
+    Wei Liu, Jiahao Chen, Chuni Liu, Xiaojuan Ban, Boyuan Ma, Hao Wang, Weihua Xue, Yu Guo. Boundary learning by using weighted propagation in convolution network[J]. Journal of Computational Science, 62, 2022, 101709. https://doi.org/10.1016/j.jocs.2022.101709.
+
+Or
+
+'''
+@article{LIU2022101709,
+title = {Boundary learning by using weighted propagation in convolution network},
+journal = {Journal of Computational Science},
+volume = {62},
+pages = {101709},
+year = {2022},
+issn = {1877-7503},
+doi = {https://doi.org/10.1016/j.jocs.2022.101709},
+url = {https://www.sciencedirect.com/science/article/pii/S1877750322001077},
+author = {Wei Liu and Jiahao Chen and Chuni Liu and Xiaojuan Ban and Boyuan Ma and Hao Wang and Weihua Xue and Yu Guo},
+keywords = {Material microscopic image segmentation, Convolution neural network, Loss function},
+abstract = {In material science, image segmentation is of great significance for quantitative analysis of microstructures. Here, we propose a novel Weighted Propagation Convolution Neural Network based on U-Net (WPU-Net) to detect boundary in poly-crystalline microscopic images. We introduce spatial consistency into network to eliminate the defects in raw microscopic image. And we customize adaptive boundary weight for each pixel in each grain, so that it leads the network to preserve grain鈥檚 geometric and topological characteristics. Moreover, we provide our dataset with the goal of advancing the development of image processing in materials science. Experiments demonstrate that the proposed method achieves promising performance in both of objective and subjective assessment. In boundary detection task, it reduces the error rate by 7%, which outperforms state-of-the-art methods by a large margin.}
+}
+'''
